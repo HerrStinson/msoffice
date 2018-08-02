@@ -1,0 +1,22 @@
+<Configuration>
+  <Add OfficeClientEdition="32" 
+    Channel="Broad" 
+    OfficeMgmtCOM="TRUE" 
+    <% unless @source.to_s.empty? %>SourcePath="<%= @source %>"<% end -%>
+    <% unless @pid_key.to_s.empty? %>PIDKEY="<%= @pid_key %>"<% end -%>
+    AllowCDNFallback="TRUE">
+    <Product ID="ProjectStdXVolume">
+      <Language ID="MatchOS" />
+      <Language ID="de-de" />
+      <Language ID="pl-pl" />
+      <Language ID="cs-cz" />
+      <Language ID="sk-sk" />
+      <Language ID="fr-fr" />
+    </Product>
+  </Add> 
+  <Property Name="SharedComputerLicensing" Value="0" />
+  <Property Name="PinIconsToTaskbar" Value="TRUE" />
+  <Property Name="AUTOACTIVATE" <% if @auto_activate %>Value="1"<% else %>Value="0"<% end -%>/>
+  <RemoveMSI All="TRUE" />
+  <Display Level="None" AcceptEULA="TRUE" />
+</Configuration>

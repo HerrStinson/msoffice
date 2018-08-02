@@ -18,26 +18,27 @@
 # limitations under the License.
 #
 
-# Ensure seven_zip is installed
 include_recipe 'seven_zip::default'
 
 # Ensure the installation ISO url has been set by the user
 if node['msoffice']['source'].nil?
-  fail "'msoffice source' attribute must be set before running this cookbook"
+  raise "'msoffice source' attribute must be set before running this cookbook"
 end
 
 edition = node['msoffice']['edition']
+bitversion = node['msoffice']['bitversion']
 version = node['msoffice']['version']
-install_url = File.join(node['msoffice']['source'], node['msoffice'][edition]['filename'])
-checksum = node['msoffice'][edition]['checksum']
-msoffice_package_name = node['msoffice'][edition]['package_name']
+install_url = File.join(node['msoffice']['source'], node['msoffice'][version][edition]['filename'])
+checksum = node['msoffice'][version][edition]['checksum']
+msoffice_package_name = node['msoffice'][version][edition]['package_name']
 
-seven_zip_exe = File.join(node['seven_zip']['home'], '7z.exe')
-iso_extraction_dir = win_friendly_path(File.join(Dir.tmpdir, 'msoffice2013'))
+install_log_file = win_friendly_path(File.join(Chef::Config[:file_cache_path], 'msoffice_install.log'))
+
+iso_extraction_dir = win_friendly_path(File.join(Dir.tmpdir(), 'msoffice'))
 setup_exe_path = File.join(iso_extraction_dir, 'setup.exe')
 config_xml_file = win_friendly_path(File.join(iso_extraction_dir, 'Config.xml'))
 
-msoffice_is_installed = registry_key_exists?(node['msoffice']['registrykey'][version], :x86_64)
+msoffice_is_installed = registry_key_exists?(node['msoffice']['registrykey'][version][bitversion], :x86_64)
 
 if msoffice_is_installed
   log "#{msoffice_package_name} is already installed. Skipping..."
@@ -52,16 +53,21 @@ else
   end
 
   # Extract the ISO image to the tmp dir
-  execute 'extract_msoffice_iso' do
-    command "#{seven_zip_exe} x -y -o#{iso_extraction_dir} #{local_iso_path}"
+  seven_zip_archive 'extract_msoffice_iso' do
+    path iso_extraction_dir
+    source local_iso_path
+    overwrite true
+    timeout 300
   end
 
   # Create installation config file
   template config_xml_file do
-    source 'Config-' + edition + '.erb'
+    source 'Config-'+ version +'-' + edition + '.erb'
     variables(
-      pid_key: node['msoffice']['pid_key'],
-      auto_activate: node['msoffice']['auto_activate']
+      :pid_key => node["msoffice"]["pid_key"],
+      :auto_activate => node["msoffice"]["auto_activate"],
+      :companyname => node['msoffice']['companyname'],
+    :username => node['msoffice']['username']
     )
   end
 

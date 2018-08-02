@@ -18,23 +18,33 @@
 # limitations under the License.
 #
 
-default['msoffice']['edition'] = 'professional' # other editions are not supported yet
-default['msoffice']['version'] = '64bit' # or '32bit'
+default['msoffice']['edition'] = 'standard' # other editions are not supported yet
+default['msoffice']['bitversion'] = '32bit' # or '32bit'
+default['msoffice']['version'] = '2013'
 
-# Set this attribute to the your Product Key, or keep it nil to activate manually
-default['msoffice']['pid_key'] = nil
+# Set this attribute to the your Product Key, or just leave it empty to enter it manually later
+default['msoffice']['pid_key'] = ''
+
+# Setting up Company and User ID in the Config.xml file
+# default['msoffice']['companyname'] = ''
+# default['msoffice']['username'] = ''
+
 
 # Set this attribute to the true if you want to activate MS Office automatically
 default['msoffice']['auto_activate'] = false
 
+
 # Set this attribute yourself to the FQDN of the folder which contains the ISO
-# default['msoffice']['source'] = 'http://example.com:8080/msoffice'
+default['msoffice']['source'] = 'http://example.com:8080/msoffice'
 
-# MS Office 2013
-default['msoffice']['professional']['package_name'] = 'Microsoft Office Professional Plus 2013'
-default['msoffice']['professional']['filename'] = 'en_office_professional_plus_2013_x64_dvd_1123674.iso'
-default['msoffice']['professional']['checksum'] = '2a31129a9d85896baf3eaf0a9380232cb16de0fb339675fe2405be22852612b0'
+# VS 2012 Professional
+default['msoffice']['2016']['standard']['package_name'] = 'Office 2016 Standard de'
+default['msoffice']['2016']['standard']['filename'] = 'SW_DVD5_Office_2016_W32_German_MLF_X20-41374.ISO'
+default['msoffice']['2016']['standard']['checksum'] = 'bb48792ad9a27b8620b636eff98cfd2c3129a1b9c38b097a2ae89007c3f44b15'
 
-# Currently you cannot change this, doing so will break the cookbook
-default['msoffice']['registrykey']['64bit'] = 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Office\15.0\Common'
-default['msoffice']['registrykey']['32bit'] = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Office\15.0\Common'
+# Used to determine if office is installed
+# Change to 14.0 for Office 2010
+default['msoffice']['registrykey']['2013']['64bit'] = 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Office\15.0\Common'
+default['msoffice']['registrykey']['2013']['32bit'] = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Office\15.0\Common'
+default['msoffice']['registrykey']['2016']['64bit'] = 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Office\16.0\Common'
+default['msoffice']['registrykey']['2016']['32bit'] = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Office\16.0\Common'
